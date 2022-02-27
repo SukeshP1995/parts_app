@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'sale_report_page.dart';
 import 'set_checkpoint.dart';
+import 'change_partno.dart';
 
 class SideDrawer extends StatelessWidget {
 
@@ -46,6 +47,14 @@ class SideDrawer extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => SaleReportPage()),
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.assessment),
+            title: Text('Change Part No.'),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ChangePartNoPage()),
             ),
           ),
           ListTile(

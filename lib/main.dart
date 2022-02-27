@@ -8,8 +8,7 @@ import 'data_services.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? checkpoint = prefs.getString("code");
+  String? checkpoint = prefs.getString("checkpoint");
 
-  print(checkpoint);
   runApp(MaterialApp(home: (checkpoint != null) ?  MainPage() : SetCheckpointPage()));
 }

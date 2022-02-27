@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import './data_services.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardPage extends StatefulWidget {
   DashboardPage({Key? key}) : super(key: key);
@@ -67,7 +66,7 @@ class _DashboardPageState extends State<DashboardPage> {
       _isLoading = true;
     });
 
-    var data = await getSaleInfo("${currentDate.toLocal()}".split(' ')[0]);
+    var data = await getSaleInfo(date: "${currentDate.toLocal()}".split(' ')[0]);
 
     setState(() {
       total = {
@@ -174,33 +173,34 @@ class _DashboardPageState extends State<DashboardPage> {
                         padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
                         child: FittedBox(
                           child: DataTable(
-                              columnSpacing: 0,
-                              showBottomBorder: true,
-                              dividerThickness: 2.0,
-                              columns: [
-                                DataColumn(label: Text("Part No.")),
-                                ...(columns.map((e) => [
-                                  DataColumn(label: Text('')),
-                                  DataColumn(label: Text(e))
-                                ]).reduce((a, b) => [...a, ...b])),
-                              ],
-                              rows: [
-                                ...saleInfo[_selected]!.entries.map((e) => DataRow(cells: [
-                                  DataCell(Text(e.key)),
-                                  ...(e.value.map((f) => [
-                                    DataCell(VerticalDivider()),
-                                    DataCell(Text(f.toString())),
-                                  ]).reduce((a, b) => [...a, ...b]))
-                                ])).toList(),
-                                DataRow(cells: [
-                                  DataCell(Text("Total")),
-                                  ...total[_selected]!.map((e) => [
-                                    DataCell(VerticalDivider()),
-                                    DataCell(Text(e.toString())),
-                                  ]).reduce((a, b) => [...a, ...b])
-                                ]
-                                )
-                              ]),
+                            columnSpacing: 0,
+                            showBottomBorder: true,
+                            dividerThickness: 2.0,
+                            columns: [
+                              DataColumn(label: Text("Part No.")),
+                              ...(columns.map((e) => [
+                                DataColumn(label: Text('')),
+                                DataColumn(label: Text(e))
+                              ]).reduce((a, b) => [...a, ...b])),
+                            ],
+                            rows: [
+                              ...saleInfo[_selected]!.entries.map((e) => DataRow(cells: [
+                                DataCell(Text(e.key)),
+                                ...(e.value.map((f) => [
+                                  DataCell(VerticalDivider()),
+                                  DataCell(Text(f.toString())),
+                                ]).reduce((a, b) => [...a, ...b]))
+                              ])).toList(),
+                              DataRow(cells: [
+                                DataCell(Text("Total")),
+                                ...total[_selected]!.map((e) => [
+                                  DataCell(VerticalDivider()),
+                                  DataCell(Text(e.toString())),
+                                ]).reduce((a, b) => [...a, ...b])
+                              ]
+                              )
+                            ]
+                          ),
                         ),
                       ),
                     ),

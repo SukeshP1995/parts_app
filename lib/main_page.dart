@@ -23,10 +23,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  // User user;
   _MainPageState();
-
-  // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final _addUnitFormKey = GlobalKey<FormState>();
 
@@ -41,7 +38,6 @@ class _MainPageState extends State<MainPage> {
     );
     try {
       var fileResult = await FilePicker.platform.pickFiles();
-      // print(filePath);
       if (fileResult == null) {
 
       } if (fileResult!.isSinglePick) {
@@ -56,12 +52,12 @@ class _MainPageState extends State<MainPage> {
           };
         }).toList());
         snackBar = SnackBar(
-            content: Text('Stock data upload successful')
+          content: Text('Stock data upload successful')
         );
       }
     }  on Exception catch(_) {
       snackBar = SnackBar(
-          content: Text('Stock data upload failed')
+        content: Text('Stock data upload failed')
       );
     }
     setState(() {
@@ -73,15 +69,22 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // key: _scaffoldKey,
       drawer: SideDrawer(),
       appBar: AppBar(
-        title: Text('Home')
+        title: Text('Home'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
+            onPressed: _searchDialog,
+          )
+        ],
       ),
       body: _isLoading ? Center(
         child: CircularProgressIndicator(),
       ) :  DashboardPage(),
-        // floatingActionButton: buildSpeedDial()
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () => _addPartsDialog(),
@@ -218,7 +221,7 @@ class _MainPageState extends State<MainPage> {
 
                       else if (_addUnitFormKey.currentState!.validate()) {
                         _addUnitFormKey.currentState!.save();
-                        print("dadas");
+
                         await addParts([<dynamic, dynamic>{
                           'partNo': partNo,
                           'quantity': quantity,
@@ -246,6 +249,149 @@ class _MainPageState extends State<MainPage> {
               ]
           );
         }
+    );
+  }
+
+  void _searchDialog() {
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+
+        var partNoController = new TextEditingController();
+        var dateController = new TextEditingController();
+
+        dateController.text = "${DateTime.now().toLocal()}".split(' ')[0];
+
+        String prevPartNo = "";
+        String partNo = "";
+
+        bool gotPart = false;
+
+        var columns = {
+          "daily": ["Opening", "Sold", "Closed", "Received"],
+          "monthly": ["Sold", "Received"]
+        };
+
+        String column = "daily";
+
+        var saleInfo;
+        // return object of type Dialog
+        return AlertDialog(
+          title: Text("Search"),
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    TextField(
+                      controller: dateController,
+                      decoration: InputDecoration(
+                        labelText: "dater",
+                        hintText: "date",
+                        suffixIcon:  InkWell(
+                          onTap: () async {
+                            DateTime? picked = await showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime(2015, 8),
+                                        lastDate: DateTime(2101));
+
+                            dateController.text = "${picked!.toLocal()}".split(' ')[0];
+                            // saleInfo = await getSaleInfo(date: date)
+                          },
+                          child: Icon(Icons.calendar_today),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 25.0,),
+                    TextField(
+                      controller: partNoController,
+                      decoration: InputDecoration(
+                        labelText: "part number",
+                        hintText: "part number",
+                        suffixIcon:  InkWell(
+                          onTap: () {
+                            String partNo = partNoController.text;
+                            getSaleInfo(
+                              date: dateController.text,
+                              partNo: partNoController.text
+                            ).then((value) => setState(() {
+                              saleInfo = value;
+                              print(saleInfo);
+                              saleInfo["saleInfo"]["daily"] = saleInfo["saleInfo"]["daily"][partNo];
+                              saleInfo["saleInfo"]["monthly"] = saleInfo["saleInfo"]["monthly"][partNo];
+                            }));
+                          },
+                          child: Icon(Icons.search),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 25.0),
+                    ...((saleInfo != null) ? [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Daily Opening:"), Text(saleInfo["saleInfo"]["daily"][0].toString())
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Daily Sold:"), Text(saleInfo["saleInfo"]["daily"][1].toString())
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Daily Closed:"), Text(saleInfo["saleInfo"]["daily"][2].toString())
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Daily Received:"), Text(saleInfo["saleInfo"]["daily"][3].toString())
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Monthly Sold:"), Text(saleInfo["saleInfo"]["monthly"][0].toString())
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Monthly Received:"), Text(saleInfo["saleInfo"]["monthly"][1].toString())
+                        ],
+                      ),
+                    ]: [
+
+                    ])
+                  ] ,
+                );
+            },
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text("ok"),
+              onPressed:  () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 

@@ -1,36 +1,29 @@
 import 'package:flutter/material.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
+import 'data_services.dart';
 
-import 'main_page.dart';
-
-class SetCheckpointPage extends StatefulWidget {
+class ChangePartNoPage extends StatefulWidget {
   @override
-  _SetCheckpointPageState createState() => _SetCheckpointPageState();
+  _ChangePartNoPageState createState() => _ChangePartNoPageState();
 }
 
-class _SetCheckpointPageState extends State<SetCheckpointPage> {
+class _ChangePartNoPageState extends State<ChangePartNoPage> {
   final GlobalKey<FormState> _formKey = GlobalKey();
-  String checkpoint = "";
+
+  String oldPartNo = "";
+  String newPartNo = "";
 
   void _submit() async {
     var snackBar = SnackBar(
-      content: Text('Checkpoint set successfully')
-    );;
+      content: Text('Part no. changed successfully')
+    );
 
     try {
       if (_formKey.currentState!.validate()) {
         _formKey.currentState!.save();
-
-        final prefs = await SharedPreferences.getInstance();
-        prefs.setString("checkpoint", checkpoint);
-        print(prefs.getString("checkpoint"));
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => MainPage()),
-        );
-
+        print(oldPartNo);
+        print(newPartNo);
+        await changePartNo(oldPartNo, newPartNo);
         _formKey.currentState!.reset();
       } else {
         snackBar = SnackBar(
@@ -43,19 +36,7 @@ class _SetCheckpointPageState extends State<SetCheckpointPage> {
       );
     }
 
-    // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
-  void initState() {
-    super.initState();
-    SharedPreferences.getInstance().then((prefs) {
-      var chkpt = prefs.getString("checkpoint");
-      if (chkpt != null) {
-        setState(() {
-          checkpoint = chkpt;
-        });
-      }
-    });
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
@@ -73,15 +54,31 @@ class _SetCheckpointPageState extends State<SetCheckpointPage> {
               child: Column(
                 children: <Widget>[
                   TextFormField(
-                    decoration: InputDecoration(labelText: 'checkpoint'),
+                    decoration: InputDecoration(labelText: 'old part no.'),
                     onSaved: (value) {
                       setState(() {
-                        checkpoint = value.toString();
+                        oldPartNo = value.toString();
                       });
                     },
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Invalid checkpoint!';
+                        return 'Invalid old part no.!';
+                      }
+                    },
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'new part no.'),
+                    onSaved: (value) {
+                      setState(() {
+                        newPartNo = value.toString();
+                      });
+                    },
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Invalid new part no.!';
                       }
                     },
                   ),

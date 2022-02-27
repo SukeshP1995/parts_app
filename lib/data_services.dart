@@ -13,11 +13,10 @@ BaseOptions options = new BaseOptions(
 
 Dio dio = new Dio(options);
 
-
 Future<void> addParts(List<Map<dynamic, dynamic>> parts) async {
   final prefs = await SharedPreferences.getInstance();
 
-  Response response = await dio.post('/add', data: jsonEncode({
+  await dio.post('/add', data: jsonEncode({
     "checkpoint": prefs.getString("checkpoint"),
     "parts": parts
   }));
@@ -37,24 +36,36 @@ Future getSold(String date) async {
     'date': date
   });
 
-  return jsonDecode(response.data.toString());
+  return response.data.toString();
 }
 
-Future<Map> getSaleInfo(String _date) async {
+Future<Map> getSaleInfo({required String date, String? partNo}) async {
   final prefs = await SharedPreferences.getInstance();
 
   Response response = await dio.get('/saleinfo', queryParameters: {
     "checkpoint": prefs.getString("checkpoint"),
-    'date': _date
+    "partNo": partNo,
+    'date': date
   });
+
   return response.data;
 }
 
 Future<void> sellUnits(List<Map<dynamic, dynamic>> parts) async {
   final prefs = await SharedPreferences.getInstance();
 
-  Response response = await dio.post('/sell', data: jsonEncode({
+  await dio.post('/sell', data: jsonEncode({
     "checkpoint": prefs.getString("checkpoint"),
     "parts": parts
   }));
 }
+
+
+Future<void> changePartNo(String oldPartNo, String newPartNo) async {
+
+  await dio.post('/updatepartno', data: jsonEncode({
+    "oldPartNo": oldPartNo,
+    "newPartNo": newPartNo
+  }));
+}
+
