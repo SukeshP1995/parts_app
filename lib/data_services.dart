@@ -37,7 +37,7 @@ Future getSold(String date) async {
     'date': date
   });
 
-  return response.data;
+  return jsonDecode(response.data.toString());
 }
 
 Future<Map> getSaleInfo({required String date, String? partNo}) async {
