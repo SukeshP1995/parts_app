@@ -76,7 +76,6 @@ class _SaleReportPageState extends State<SaleReportPage> {
     super.initState();
 
     getSold("${currentDate.toLocal()}".split(' ')[0]).then((value) {
-      print(value);
       setState(() {
         parts = value;
       });

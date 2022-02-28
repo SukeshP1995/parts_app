@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 BaseOptions options = new BaseOptions(
   baseUrl: "https://parts-api.vercel.app/api",
+  // baseUrl: "http://localhost:3000/api",
   connectTimeout: 80000,
   receiveTimeout: 30000,
   headers: {"Accept": "application/json"}
@@ -25,7 +26,7 @@ Future<void> addParts(List<Map<dynamic, dynamic>> parts) async {
 Future getParts(List<String> ids) async {
   Response response = await dio.post('/get', data: jsonEncode(ids));
 
-  return jsonDecode(response.data.toString());
+  return response.data;
 }
 
 Future getSold(String date) async {
@@ -36,7 +37,7 @@ Future getSold(String date) async {
     'date': date
   });
 
-  return response.data.toString();
+  return jsonDecode(response.data.toString());
 }
 
 Future<Map> getSaleInfo({required String date, String? partNo}) async {
