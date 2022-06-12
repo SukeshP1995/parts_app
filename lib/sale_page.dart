@@ -272,21 +272,38 @@ class _SalePageState extends State<SalePage> {
                     //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     // } else {
                       // var unit = (await getParts([partNo]));
-                    setState(() {
-                      parts.add(<dynamic, dynamic>{
-                        "partNo": partNo,
-                        "quantity": quantity,
-                        "date": DateFormat('yyyy-MM-dd').format(currentDate),
-                        "saleType": saleType,
+
+                    var dailySale = (await getSaleInfo(
+                        date: DateFormat('yyyy-MM-dd').format(currentDate),
+                        partNo: partNo
+                    ))["saleInfo"]["daily"];
+
+                    if (dailySale[partNo] == null) {
+                      snackBar = SnackBar(
+                        content: Text('Part no. is not correct')
+                      );
+                    } else if (dailySale[partNo][2] == 0) {
+                      snackBar = SnackBar(
+                        content: Text('stock is empty for the given Part no.')
+                      );
+                    }
+                    else {
+                      setState(() {
+                        parts.add(<dynamic, dynamic>{
+                          "partNo": partNo,
+                          "quantity": quantity,
+                          "date": DateFormat('yyyy-MM-dd').format(currentDate),
+                          "saleType": saleType,
+                        });
                       });
-                    });
-                    // }
-                    print(_getSummary());
-                    _addPartFormKey.currentState!.reset();
-                    snackBar = SnackBar(
-                      content: Text('Part added successfully')
-                    );
-                    Navigator.of(context).pop();
+                      // }
+                      // print(_getSummary());
+                      _addPartFormKey.currentState!.reset();
+                      snackBar = SnackBar(
+                        content: Text('Part added successfully')
+                      );
+                      Navigator.of(context).pop();
+                    }
                   } else {
                     snackBar = SnackBar(
                       content: Text('Please enter all details correctly')
@@ -297,7 +314,7 @@ class _SalePageState extends State<SalePage> {
                     content: Text('Part not added')
                   );
                 }
-                // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
               },
             ),
           ],

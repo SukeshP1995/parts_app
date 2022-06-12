@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -75,6 +77,8 @@ class _DashboardPageState extends State<DashboardPage> {
       };
 
       saleInfo = new Map<String, Map<String, dynamic>>.from(data["saleInfo"]);
+
+      print(saleInfo);
 
       partNos = {
         "daily": saleInfo["daily"]!.keys.toList()..sort(),

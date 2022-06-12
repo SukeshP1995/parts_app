@@ -323,7 +323,6 @@ class _MainPageState extends State<MainPage> {
                               partNo: partNoController.text
                             ).then((value) => setState(() {
                               saleInfo = value;
-                              print(saleInfo);
                               saleInfo["saleInfo"]["daily"] = saleInfo["saleInfo"]["daily"][partNo];
                               saleInfo["saleInfo"]["monthly"] = saleInfo["saleInfo"]["monthly"][partNo];
                             }));
