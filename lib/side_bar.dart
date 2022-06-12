@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:parts_app/main_page.dart';
+import 'package:parts_app/received_report_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'sale_report_page.dart';
@@ -47,6 +48,14 @@ class SideDrawer extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => SaleReportPage()),
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.assignment),
+            title: Text('Received Page'),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ReceivedReportPage()),
             ),
           ),
           ListTile(

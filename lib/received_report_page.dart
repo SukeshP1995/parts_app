@@ -3,17 +3,16 @@ import 'package:flutter/material.dart';
 
 import 'data_services.dart';
 import 'part_description.dart';
-import 'sale_page.dart';
 
-class SaleReportPage extends StatefulWidget {
+class ReceivedReportPage extends StatefulWidget {
 
-  SaleReportPage({Key? key}) : super(key: key);
+  ReceivedReportPage({Key? key}) : super(key: key);
 
   @override
-  _SaleReportPageState createState() => _SaleReportPageState();
+  _ReceivedReportPageState createState() => _ReceivedReportPageState();
 }
 
-class _SaleReportPageState extends State<SaleReportPage> {
+class _ReceivedReportPageState extends State<ReceivedReportPage> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -26,7 +25,7 @@ class _SaleReportPageState extends State<SaleReportPage> {
   void initState() {
     super.initState();
 
-    getSold("${currentDate.toLocal()}".split(' ')[0]).then((value) {
+    getReceived("${currentDate.toLocal()}".split(' ')[0]).then((value) {
       setState(() {
         parts = value;
       });
@@ -59,7 +58,7 @@ class _SaleReportPageState extends State<SaleReportPage> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text('Sale Page'),
+            Text('Received Page'),
           ],
         ),
       ),
@@ -104,13 +103,6 @@ class _SaleReportPageState extends State<SaleReportPage> {
             ),
           )
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => SalePage()),
-        ),
       ),
 
     );

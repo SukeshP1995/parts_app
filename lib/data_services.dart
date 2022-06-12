@@ -5,8 +5,8 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 BaseOptions options = new BaseOptions(
-  // baseUrl: "https://parts-api.vercel.app/api",
-  baseUrl: "http://localhost:3000/api",
+  baseUrl: "https://parts-api.vercel.app/api",
+  // baseUrl: "http://localhost:3000/api",
   connectTimeout: 80000,
   receiveTimeout: 30000,
   headers: {"Accept": "application/json"}
@@ -33,6 +33,17 @@ Future getSold(String date) async {
   final prefs = await SharedPreferences.getInstance();
 
   Response response = await dio.get('/getsold', queryParameters: {
+    "checkpoint": prefs.getString("checkpoint"),
+    'date': date
+  });
+
+  return jsonDecode(response.data.toString());
+}
+
+Future getReceived(String date) async {
+  final prefs = await SharedPreferences.getInstance();
+
+  Response response = await dio.get('/getreceived', queryParameters: {
     "checkpoint": prefs.getString("checkpoint"),
     'date': date
   });
