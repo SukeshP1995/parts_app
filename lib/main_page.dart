@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -96,6 +97,7 @@ class _MainPageState extends State<MainPage> {
     bool isSwitched = false;
     String partNo = "";
     int quantity = 0;
+    DateTime currentDate = DateTime.now();
 
     showDialog(
         context: context,
@@ -193,6 +195,44 @@ class _MainPageState extends State<MainPage> {
                                   )
                                 ],
                               ),
+                              const Gap(5),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Flexible(
+                                    fit: FlexFit.tight,
+                                    child: DateTimeField(
+                                      format: DateFormat("yyyy-MM-dd"),
+                                      onShowPicker: (context, currentValue) {
+                                        return showDatePicker(
+                                            context: context,
+                                            firstDate: DateTime(1900),
+                                            initialDate: currentValue ?? DateTime.now(),
+                                            lastDate: DateTime(2100)
+                                        );
+                                      },
+                                      initialValue: DateTime.now(),
+                                      onSaved: (value) {
+                                        currentDate = DateTime.parse(value.toString());
+                                      },
+                                      validator: (value) {
+                                        if (value == null)
+                                          return 'Please enter sale date';
+                                        return null;
+                                      },
+                                      decoration: InputDecoration(
+                                        labelText: "sale date",
+                                        hintText: "sale date",
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(10.0),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ],
                           ),
                         )
@@ -225,7 +265,7 @@ class _MainPageState extends State<MainPage> {
                         await addParts([<dynamic, dynamic>{
                           'partNo': partNo,
                           'quantity': quantity,
-                          "date":  DateFormat('yyyy-MM-dd').format(DateTime.now())
+                          "date": DateFormat('yyyy-MM-dd').format(currentDate)
                         }]);
                         snackBar = SnackBar(
                           content: Text('Unit added successfully')
